@@ -27,16 +27,15 @@ namespace OnlineMobileServices
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles(); // <-- Add this line to enable static file serving
             app.UseSession();
             app.UseRouting();
 
             app.UseAuthorization();
 
-            app.MapStaticAssets();
-            app.MapControllerRoute(
+              app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
-                .WithStaticAssets();
+                pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
         }

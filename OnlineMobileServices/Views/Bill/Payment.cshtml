@@ -1,0 +1,17 @@
+﻿
+@{
+    ViewData["Title"] = "Payment";
+}
+
+@model OnlineMobileServices.Models.PostPaidBill
+
+<h2>Bill Payment</h2>
+
+<p>Mobile: @Model.MobileNumber</p>
+<p>Amount: @Model.Amount</p>
+<p>Due Date: @Model.DueDate</p>
+
+<form method="post" asp-action="PaymentConfirm">
+    <input type="hidden" name="id" value="@Model.BillId" />
+    <button type="submit">Pay Bill</button>
+</form>

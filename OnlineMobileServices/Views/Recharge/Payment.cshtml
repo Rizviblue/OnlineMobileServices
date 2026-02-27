@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewData["Title"] = "Payment";
+}
+
+@model OnlineMobileServices.Models.RechargePlan
+
+<h2>Payment Page</h2>
+
+<p>Mobile: @ViewBag.Mobile</p>
+<p>Plan: @Model.PlanName</p>
+<p>Amount: @Model.Amount</p>
+
+<form method="post" asp-action="PaymentConfirm">
+    <input type="hidden" name="planId" value="@Model.PlanId" />
+    <input type="hidden" name="mobile" value="@ViewBag.Mobile" />
+
+    <button type="submit">Pay Now</button>
+</form>

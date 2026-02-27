@@ -1,0 +1,17 @@
+﻿
+@{
+    ViewData["Title"] = "EnterMobile";
+}
+
+<h2>Post Paid Bill Payment</h2>
+
+@if (ViewBag.Error != null)
+{
+    <p style="color:red">@ViewBag.Error</p>
+}
+
+<form method="post">
+    <label>Enter Mobile Number</label>
+    <input name="mobileNumber" />
+    <button type="submit">Proceed</button>
+</form>

@@ -1,0 +1,15 @@
+﻿
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h2>Admin Dashboard</h2>
+
+<div>
+    <p><strong>Total Users:</strong> @ViewBag.TotalUsers</p>
+    <p><strong>Total Recharges:</strong> @ViewBag.TotalRecharges</p>
+    <p><strong>Total Bills:</strong> @ViewBag.TotalBills</p>
+    <p><strong>Total Feedback:</strong> @ViewBag.TotalFeedback</p>
+</div>
+
+<a href="/Account/Login">Logout</a>

@@ -1,0 +1,29 @@
+﻿
+@{
+    ViewData["Title"] = "Plans";
+}
+
+@model List<OnlineMobileServices.Models.RechargePlan>
+
+<h2>Select Plan (@ViewBag.Type)</h2>
+
+<table border="1">
+    <tr>
+        <th>Plan Name</th>
+        <th>Amount</th>
+        <th>Select</th>
+    </tr>
+
+    @foreach (var plan in Model)
+    {
+        <tr>
+            <td>@plan.PlanName</td>
+            <td>@plan.Amount</td>
+            <td>
+                <a href="/Recharge/Payment?planId=@plan.PlanId&mobile=@ViewBag.Mobile">
+                    Select
+                </a>
+            </td>
+        </tr>
+    }
+</table>

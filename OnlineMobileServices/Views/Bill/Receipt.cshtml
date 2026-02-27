@@ -1,0 +1,13 @@
+﻿
+@{
+    ViewData["Title"] = "Receipt";
+}
+
+@model OnlineMobileServices.Models.PostPaidBill
+
+<h2>Bill Payment Receipt</h2>
+
+<p>Mobile: @Model.MobileNumber</p>
+<p>Amount: @Model.Amount</p>
+<p>Transaction ID: @Model.TransactionId</p>
+<p>Date: @Model.PaymentDate</p>
