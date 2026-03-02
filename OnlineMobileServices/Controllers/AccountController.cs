@@ -40,17 +40,23 @@ namespace OnlineMobileServices.Controllers
         {
             return View();
         }
-
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login");
+        }
         // POST: Login
         [HttpPost]
         public IActionResult Login(string mobileNumber, string password)
         {
             var user = _context.Users
-                .FirstOrDefault(u => u.MobileNumber == mobileNumber && u.PasswordHash == password);
+                .FirstOrDefault(u => u.MobileNumber == mobileNumber
+                                  && u.PasswordHash == password);
 
             if (user != null)
             {
                 HttpContext.Session.SetString("UserId", user.UserId.ToString());
+                HttpContext.Session.SetString("Username", user.FullName);
                 HttpContext.Session.SetString("UserRole", user.Role);
 
                 if (user.Role == "Admin")
@@ -59,7 +65,7 @@ namespace OnlineMobileServices.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            ViewBag.Error = "Invalid login";
+            ViewBag.Message = "Invalid Mobile Number or Password";
             return View();
         }
     }

@@ -1,0 +1,27 @@
+﻿
+@{
+    ViewData["Title"] = "ViewRecharges";
+}
+
+@model List<OnlineMobileServices.Models.Recharge>
+
+<h2>All Recharges</h2>
+
+<table border="1">
+    <tr>
+        <th>Mobile</th>
+        <th>Amount</th>
+        <th>Transaction ID</th>
+        <th>Date</th>
+    </tr>
+
+    @foreach (var r in Model)
+    {
+        <tr>
+            <td>@r.MobileNumber</td>
+            <td>@r.Amount</td>
+            <td>@r.TransactionId</td>
+            <td>@r.RechargeDate</td>
+        </tr>
+    }
+</table>

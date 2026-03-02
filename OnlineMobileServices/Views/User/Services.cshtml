@@ -1,0 +1,30 @@
+﻿
+@{
+    ViewData["Title"] = "Services";
+}
+
+@model List<OnlineMobileServices.Models.Service>
+
+<h2>Available Services</h2>
+
+<table border="1">
+    <tr>
+        <th>Service</th>
+        <th>Description</th>
+        <th>Action</th>
+    </tr>
+
+    @foreach (var service in Model)
+    {
+        <tr>
+            <td>@service.ServiceName</td>
+            <td>@service.Description</td>
+            <td>
+                <form method="post" asp-action="ActivateService">
+                    <input type="hidden" name="serviceId" value="@service.ServiceId" />
+                    <button type="submit">Activate</button>
+                </form>
+            </td>
+        </tr>
+    }
+</table>

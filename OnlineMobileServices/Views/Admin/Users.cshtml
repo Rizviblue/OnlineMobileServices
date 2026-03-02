@@ -1,0 +1,27 @@
+﻿
+@{
+    ViewData["Title"] = "Users";
+}
+
+@model List<OnlineMobileServices.Models.User>
+
+<h2>All Users</h2>
+
+<table border="1">
+    <tr>
+        <th>Name</th>
+        <th>Mobile</th>
+        <th>Email</th>
+        <th>Role</th>
+    </tr>
+
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>@user.FullName</td>
+            <td>@user.MobileNumber</td>
+            <td>@user.Email</td>
+            <td>@user.Role</td>
+        </tr>
+    }
+</table>

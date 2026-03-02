@@ -1,0 +1,30 @@
+﻿
+@{
+    ViewData["Title"] = "ViewBills";
+}
+
+@model List<OnlineMobileServices.Models.PostPaidBill>
+
+<h2>All Bill Payments</h2>
+
+<table border="1">
+    <tr>
+        <th>Mobile</th>
+        <th>Amount</th>
+        <th>Status</th>
+        <th>Transaction ID</th>
+        <th>Payment Date</th>
+    </tr>
+
+    @foreach (var b in Model)
+    {
+        <tr>
+            <td>@b.MobileNumber</td>
+            <td>@b.Amount</td>
+            <td>@b.PaidStatus</td>
+            <td>@b.TransactionId</td>
+            <td>@b.PaymentDate</td>
+        </tr>
+    }
+</table>
+

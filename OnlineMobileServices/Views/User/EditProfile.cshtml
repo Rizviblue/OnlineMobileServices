@@ -1,0 +1,20 @@
+﻿
+@{
+    ViewData["Title"] = "EditProfile";
+}
+
+@model OnlineMobileServices.Models.User
+
+<h2>Edit Profile</h2>
+
+<form method="post">
+    <input type="hidden" asp-for="UserId" />
+
+    <label>Name</label>
+    <input asp-for="FullName" />
+
+    <label>Email</label>
+    <input asp-for="Email" />
+
+    <button type="submit">Save</button>
+</form>

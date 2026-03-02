@@ -1,0 +1,27 @@
+﻿
+@{
+    ViewData["Title"] = "ViewFeedback";
+}
+
+@model List<OnlineMobileServices.Models.Feedback>
+
+<h2>All Feedback</h2>
+
+<table border="1">
+    <tr>
+        <th>Name</th>
+        <th>Mobile</th>
+        <th>Message</th>
+        <th>Date</th>
+    </tr>
+
+    @foreach (var f in Model)
+    {
+        <tr>
+            <td>@f.Name</td>
+            <td>@f.MobileNumber</td>
+            <td>@f.Message</td>
+            <td>@f.FeedbackDate</td>
+        </tr>
+    }
+</table>

@@ -1,0 +1,17 @@
+﻿
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+@model OnlineMobileServices.Models.User
+
+<h2>User Dashboard</h2>
+
+<p>Welcome, @Model.FullName</p>
+<p>Mobile: @Model.MobileNumber</p>
+
+<a href="/User/Services">Manage Services</a>
+<br />
+<a href="/Recharge/EnterMobile">Online Recharge</a>
+<br />
+<a href="/User/EditProfile">Edit Profile</a>

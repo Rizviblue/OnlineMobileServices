@@ -1,0 +1,25 @@
+﻿
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Submit Feedback</h2>
+
+@if (ViewBag.Message != null)
+{
+    <p style="color:green">@ViewBag.Message</p>
+}
+
+<form method="post">
+    <label>Name</label><br />
+    <input name="Name" required /><br /><br />
+
+    <label>Mobile Number</label><br />
+    <input name="MobileNumber" required /><br /><br />
+
+    <label>Message</label><br />
+    <textarea name="Message" required></textarea><br /><br />
+
+    <button type="submit">Submit</button>
+</form>
+
