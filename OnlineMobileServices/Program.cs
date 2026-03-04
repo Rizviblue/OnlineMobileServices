@@ -30,6 +30,21 @@ namespace OnlineMobileServices
 
             var app = builder.Build();
 
+            // Seed demo data
+            using (var scope = app.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                try
+                {
+                    DataSeeder.Seed(context);
+                }
+                catch (Exception ex)
+                {
+                    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+                    logger.LogWarning(ex, "An error occurred seeding the database. This is expected if the database hasn't been migrated yet.");
+                }
+            }
+
             // Error Handling
             if (!app.Environment.IsDevelopment())
             {
@@ -42,7 +57,7 @@ namespace OnlineMobileServices
 
             app.UseRouting();
 
-            // Session middleware (Routing ke baad, Authorization se pehle)
+            // Session middleware
             app.UseSession();
 
             app.UseAuthorization();

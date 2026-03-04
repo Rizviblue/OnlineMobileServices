@@ -1,56 +1,59 @@
-﻿@model OnlineMobileServices.Models.ViewModels.EditProfileViewModel
+@model OnlineMobileServices.Models.User
 
 @{
-    ViewData["Title"] = "Edit Profile";
+    ViewData["Title"] = "Edit User";
 }
 
 <div class="row justify-content-center">
     <div class="col-md-6 col-lg-5">
         <div class="page-header text-center">
-            <h2><i class="bi bi-pencil-square"></i> Edit Profile</h2>
-            <p>Update your account information</p>
+            <h2><i class="bi bi-pencil-square"></i> Edit User</h2>
+            <p>Update user account details</p>
         </div>
 
         <div class="card shadow-sm">
             <div class="card-body p-4">
-                <form method="post" asp-action="EditProfile">
+                <form method="post" asp-action="EditUser" asp-route-id="@Model.UserId">
                     @Html.AntiForgeryToken()
-                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-                    <input type="hidden" asp-for="UserId" />
 
                     <div class="mb-3">
-                        <label asp-for="MobileNumber" class="form-label fw-semibold"></label>
+                        <label class="form-label fw-semibold">Mobile Number</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-phone"></i></span>
-                            <input asp-for="MobileNumber" class="form-control" readonly />
+                            <input class="form-control" value="@Model.MobileNumber" readonly />
                         </div>
                         <div class="form-text">Mobile number cannot be changed</div>
                     </div>
 
                     <div class="mb-3">
-                        <label asp-for="FullName" class="form-label fw-semibold"></label>
+                        <label class="form-label fw-semibold">Full Name</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-person"></i></span>
-                            <input asp-for="FullName" class="form-control" placeholder="Enter your full name" />
+                            <input name="fullName" class="form-control" value="@Model.FullName" required />
                         </div>
-                        <span asp-validation-for="FullName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email Address</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                            <input name="email" class="form-control" value="@Model.Email" type="email" required />
+                        </div>
                     </div>
 
                     <div class="mb-4">
-                        <label asp-for="Email" class="form-label fw-semibold"></label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                            <input asp-for="Email" class="form-control" placeholder="your@email.com" type="email" />
-                        </div>
-                        <span asp-validation-for="Email" class="text-danger small"></span>
+                        <label class="form-label fw-semibold">Role</label>
+                        <select name="role" class="form-select">
+                            <option value="User" selected="@(Model.Role == "User")">User</option>
+                            <option value="Admin" selected="@(Model.Role == "Admin")">Admin</option>
+                        </select>
                     </div>
 
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary py-2">
                             <i class="bi bi-check-lg"></i> Save Changes
                         </button>
-                        <a asp-action="Profile" class="btn btn-outline-secondary">
+                        <a asp-action="Users" class="btn btn-outline-secondary">
                             <i class="bi bi-x-lg"></i> Cancel
                         </a>
                     </div>
@@ -59,7 +62,3 @@
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}

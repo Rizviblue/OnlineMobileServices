@@ -1,17 +1,47 @@
-﻿
-@{
-    ViewData["Title"] = "EnterMobile";
+﻿@{
+    ViewData["Title"] = "Postpaid Bill Payment";
 }
 
-<h2>Post Paid Bill Payment</h2>
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="page-header text-center">
+            <h2><i class="bi bi-receipt"></i> Postpaid Bill Payment</h2>
+            <p>Enter your mobile number to view and pay your bill</p>
+        </div>
 
-@if (ViewBag.Error != null)
-{
-    <p style="color:red">@ViewBag.Error</p>
-}
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <form method="post" asp-action="EnterMobile">
+                    @Html.AntiForgeryToken()
 
-<form method="post">
-    <label>Enter Mobile Number</label>
-    <input name="mobileNumber" />
-    <button type="submit">Proceed</button>
-</form>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Mobile Number</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text"><i class="bi bi-phone"></i> +91</span>
+                            <input name="mobileNumber" class="form-control" placeholder="Enter 10-digit number"
+                                   maxlength="10" pattern="[0-9]{10}" required
+                                   value="@(ViewBag.Mobile ?? "")" />
+                        </div>
+                        <div class="form-text">Enter your postpaid mobile number to fetch the bill</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 py-2">
+                        <i class="bi bi-search"></i> Fetch Bill
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mt-4 shadow-sm">
+            <div class="card-body p-3">
+                <h6 class="fw-bold"><i class="bi bi-info-circle text-info"></i> How it works</h6>
+                <ol class="small text-muted mb-0">
+                    <li>Enter your postpaid mobile number</li>
+                    <li>View your pending bill amount and due date</li>
+                    <li>Click Pay to complete the payment</li>
+                    <li>Get instant transaction receipt</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>

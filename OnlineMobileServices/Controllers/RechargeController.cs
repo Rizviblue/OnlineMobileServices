@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OnlineMobileServices.Models;
-using System.Linq;
 
 namespace OnlineMobileServices.Controllers
 {
@@ -16,67 +16,119 @@ namespace OnlineMobileServices.Controllers
         // Step 1 - Enter Mobile Number
         public IActionResult EnterMobile()
         {
+            // Pre-fill if user is logged in
+            var mobile = HttpContext.Session.GetString("UserMobile");
+            if (!string.IsNullOrEmpty(mobile))
+                ViewBag.Mobile = mobile;
             return View();
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult EnterMobile(string mobileNumber)
         {
-            if (mobileNumber.Length != 10 || !mobileNumber.All(char.IsDigit))
+            if (string.IsNullOrEmpty(mobileNumber) || mobileNumber.Length != 10 || !mobileNumber.All(char.IsDigit))
             {
-                ViewBag.Error = "Mobile number must be 10 digits.";
+                TempData["Error"] = "Please enter a valid 10-digit mobile number.";
                 return View();
             }
 
             return RedirectToAction("SelectType", new { mobile = mobileNumber });
         }
 
+        // Step 2 - Select Recharge Type
         public IActionResult SelectType(string mobile)
         {
+            if (string.IsNullOrEmpty(mobile))
+                return RedirectToAction("EnterMobile");
+
             ViewBag.Mobile = mobile;
             return View();
         }
-        public IActionResult Plans(string type, string mobile)
+
+        // Step 3 - Show Plans
+        public async Task<IActionResult> Plans(string type, string mobile)
         {
-            var plans = _context.RechargePlans
+            if (string.IsNullOrEmpty(mobile) || string.IsNullOrEmpty(type))
+                return RedirectToAction("EnterMobile");
+
+            var plans = await _context.RechargePlans
                 .Where(p => p.PlanType == type)
-                .ToList();
+                .OrderBy(p => p.Amount)
+                .ToListAsync();
 
             ViewBag.Mobile = mobile;
             ViewBag.Type = type;
 
             return View(plans);
         }
-        public IActionResult Payment(int planId, string mobile)
+
+        // Step 4 - Payment page
+        public async Task<IActionResult> Payment(int planId, string mobile)
         {
-            var plan = _context.RechargePlans.FirstOrDefault(p => p.PlanId == planId);
+            if (string.IsNullOrEmpty(mobile))
+                return RedirectToAction("EnterMobile");
+
+            var plan = await _context.RechargePlans.FindAsync(planId);
+            if (plan == null)
+            {
+                TempData["Error"] = "Invalid plan selected.";
+                return RedirectToAction("EnterMobile");
+            }
 
             ViewBag.Mobile = mobile;
             return View(plan);
         }
 
+        // Step 5 - Process Payment
         [HttpPost]
-        public IActionResult PaymentConfirm(int planId, string mobile)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PaymentConfirm(int planId, string mobile)
         {
-            var plan = _context.RechargePlans.FirstOrDefault(p => p.PlanId == planId);
-
-            var recharge = new Recharge
+            try
             {
-                MobileNumber = mobile,
-                PlanId = planId,
-                Amount = plan.Amount,
-                TransactionId = Guid.NewGuid().ToString()
-            };
+                var plan = await _context.RechargePlans.FindAsync(planId);
+                if (plan == null)
+                {
+                    TempData["Error"] = "Invalid plan.";
+                    return RedirectToAction("EnterMobile");
+                }
 
-            _context.Recharges.Add(recharge);
-            _context.SaveChanges();
+                var recharge = new Recharge
+                {
+                    MobileNumber = mobile,
+                    PlanId = planId,
+                    Amount = plan.Amount,
+                    TransactionId = "TXN" + Guid.NewGuid().ToString("N")[..9].ToUpper(),
+                    PaymentStatus = "Success",
+                    RechargeDate = DateTime.Now
+                };
 
-            return RedirectToAction("Receipt", new { id = recharge.RechargeId });
+                _context.Recharges.Add(recharge);
+                await _context.SaveChangesAsync();
+
+                TempData["Success"] = "Recharge successful!";
+                return RedirectToAction("Receipt", new { id = recharge.RechargeId });
+            }
+            catch (Exception)
+            {
+                TempData["Error"] = "Payment failed. Please try again.";
+                return RedirectToAction("EnterMobile");
+            }
         }
-        public IActionResult Receipt(int id)
+
+        // Step 6 - Receipt
+        public async Task<IActionResult> Receipt(int id)
         {
-            var recharge = _context.Recharges
-                .FirstOrDefault(r => r.RechargeId == id);
+            var recharge = await _context.Recharges
+                .Include(r => r.RechargePlan)
+                .FirstOrDefaultAsync(r => r.RechargeId == id);
+
+            if (recharge == null)
+            {
+                TempData["Error"] = "Transaction not found.";
+                return RedirectToAction("EnterMobile");
+            }
 
             return View(recharge);
         }

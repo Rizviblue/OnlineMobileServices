@@ -1,13 +1,66 @@
-﻿
+﻿@model OnlineMobileServices.Models.Recharge
+
 @{
-    ViewData["Title"] = "Receipt";
+    ViewData["Title"] = "Recharge Receipt";
 }
 
-@model OnlineMobileServices.Models.Recharge
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <div class="rounded-circle bg-success bg-opacity-10 d-inline-flex align-items-center justify-content-center" style="width:80px;height:80px;">
+                        <i class="bi bi-check-circle-fill display-4 text-success"></i>
+                    </div>
+                    <h3 class="mt-3 fw-bold text-success">Recharge Successful!</h3>
+                    <p class="text-muted">Your recharge has been processed successfully</p>
+                </div>
 
-<h2>Transaction Receipt</h2>
+                <div class="bg-light rounded p-3 mb-3">
+                    <table class="table table-borderless mb-0">
+                        <tbody>
+                            <tr>
+                                <td class="fw-semibold text-muted">Transaction ID</td>
+                                <td class="text-end"><code>@Model.TransactionId</code></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold text-muted">Mobile Number</td>
+                                <td class="text-end">+91 @Model.MobileNumber</td>
+                            </tr>
+                            @if (Model.RechargePlan != null)
+                            {
+                                <tr>
+                                    <td class="fw-semibold text-muted">Plan</td>
+                                    <td class="text-end">@Model.RechargePlan.PlanName</td>
+                                </tr>
+                            }
+                            <tr>
+                                <td class="fw-semibold text-muted">Amount Paid</td>
+                                <td class="text-end fw-bold text-primary fs-5">₹@Model.Amount</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold text-muted">Status</td>
+                                <td class="text-end">
+                                    <span class="badge bg-success">@Model.PaymentStatus</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold text-muted">Date & Time</td>
+                                <td class="text-end">@Model.RechargeDate.ToString("dd MMM yyyy, hh:mm tt")</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-<p>Mobile: @Model.MobileNumber</p>
-<p>Amount: @Model.Amount</p>
-<p>Transaction ID: @Model.TransactionId</p>
-<p>Date: @Model.RechargeDate</p>
+                <div class="d-grid gap-2">
+                    <a asp-controller="Recharge" asp-action="EnterMobile" class="btn btn-primary">
+                        <i class="bi bi-lightning-charge"></i> Recharge Again
+                    </a>
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-house"></i> Go to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

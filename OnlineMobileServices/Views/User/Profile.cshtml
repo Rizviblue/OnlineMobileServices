@@ -1,0 +1,54 @@
+@model OnlineMobileServices.Models.User
+
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="page-header text-center">
+            <h2><i class="bi bi-person-circle"></i> My Profile</h2>
+            <p>View and manage your account details</p>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center" style="width:100px;height:100px;">
+                        <i class="bi bi-person-fill display-3 text-primary"></i>
+                    </div>
+                    <h3 class="mt-3 fw-bold">@Model.FullName</h3>
+                    <span class="badge bg-primary">@Model.Role</span>
+                </div>
+
+                <div class="bg-light rounded p-3">
+                    <table class="table table-borderless mb-0">
+                        <tbody>
+                            <tr>
+                                <td class="fw-semibold text-muted"><i class="bi bi-phone me-2"></i>Mobile Number</td>
+                                <td class="text-end">+91 @Model.MobileNumber</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold text-muted"><i class="bi bi-envelope me-2"></i>Email</td>
+                                <td class="text-end">@Model.Email</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold text-muted"><i class="bi bi-calendar me-2"></i>Member Since</td>
+                                <td class="text-end">@Model.CreatedDate.ToString("dd MMM yyyy")</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <a asp-action="EditProfile" class="btn btn-primary py-2">
+                        <i class="bi bi-pencil"></i> Edit Profile
+                    </a>
+                    <a asp-action="Dashboard" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

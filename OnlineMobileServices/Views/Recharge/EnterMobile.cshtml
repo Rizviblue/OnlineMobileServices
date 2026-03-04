@@ -1,17 +1,47 @@
-﻿
-@{
-    ViewData["Title"] = "EnterMobile";
+﻿@{
+    ViewData["Title"] = "Online Recharge";
 }
 
-<h2>Online Recharge</h2>
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="page-header text-center">
+            <h2><i class="bi bi-lightning-charge"></i> Online Recharge</h2>
+            <p>Enter your mobile number to get started</p>
+        </div>
 
-@if (ViewBag.Error != null)
-{
-    <p style="color:red">@ViewBag.Error</p>
-}
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <form method="post" asp-action="EnterMobile">
+                    @Html.AntiForgeryToken()
 
-<form method="post">
-    <label>Enter Mobile Number</label>
-    <input name="mobileNumber" />
-    <button type="submit">Proceed</button>
-</form>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Mobile Number</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text"><i class="bi bi-phone"></i> +91</span>
+                            <input name="mobileNumber" class="form-control" placeholder="Enter 10-digit number"
+                                   maxlength="10" pattern="[0-9]{10}" required
+                                   value="@(ViewBag.Mobile ?? "")" />
+                        </div>
+                        <div class="form-text">Enter the 10-digit mobile number you want to recharge</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2">
+                        <i class="bi bi-arrow-right-circle"></i> Proceed
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mt-4 shadow-sm">
+            <div class="card-body p-3">
+                <h6 class="fw-bold"><i class="bi bi-info-circle text-info"></i> How it works</h6>
+                <ol class="small text-muted mb-0">
+                    <li>Enter your 10-digit mobile number</li>
+                    <li>Choose recharge type (TopUp or Special)</li>
+                    <li>Select a plan from available options</li>
+                    <li>Confirm payment and get instant recharge</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>

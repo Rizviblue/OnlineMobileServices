@@ -1,19 +1,12 @@
-﻿@model List<OnlineMobileServices.Models.Recharge>
+@model List<OnlineMobileServices.Models.Recharge>
 
 @{
-    ViewData["Title"] = "All Recharges";
+    ViewData["Title"] = "Recharge History";
 }
 
-<div class="page-header">
-    <div class="d-flex justify-content-between align-items-center flex-wrap">
-        <div>
-            <h2><i class="bi bi-lightning-charge"></i> All Recharges</h2>
-            <p>Complete history of all recharge transactions</p>
-        </div>
-        <a asp-action="Dashboard" class="btn btn-light">
-            <i class="bi bi-arrow-left"></i> Back to Dashboard
-        </a>
-    </div>
+<div class="page-header text-center">
+    <h2><i class="bi bi-clock-history"></i> Recharge History</h2>
+    <p>View all your past recharges</p>
 </div>
 
 @if (Model == null || !Model.Any())
@@ -21,22 +14,21 @@
     <div class="text-center py-5">
         <i class="bi bi-inbox display-1 text-muted"></i>
         <h4 class="mt-3 text-muted">No recharges found</h4>
+        <p class="text-muted">You haven't made any recharges yet.</p>
+        <a asp-controller="Recharge" asp-action="EnterMobile" class="btn btn-primary">
+            <i class="bi bi-lightning-charge"></i> Recharge Now
+        </a>
     </div>
 }
 else
 {
     <div class="card shadow-sm">
-        <div class="card-header bg-white d-flex justify-content-between align-items-center">
-            <h5 class="mb-0 fw-bold">All Recharges (@Model.Count)</h5>
-            <span class="badge bg-primary fs-6">Total: ₹@Model.Sum(r => r.Amount).ToString("N0")</span>
-        </div>
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Mobile</th>
                             <th>Plan</th>
                             <th>Amount</th>
                             <th>Transaction ID</th>
@@ -50,16 +42,15 @@ else
                         {
                             <tr>
                                 <td>@(sn++)</td>
-                                <td>+91 @r.MobileNumber</td>
                                 <td>@(r.RechargePlan?.PlanName ?? "N/A")</td>
-                                <td class="fw-bold">₹@r.Amount</td>
+                                <td class="fw-bold">?@r.Amount</td>
                                 <td><code>@r.TransactionId</code></td>
                                 <td>
                                     <span class="badge @(r.PaymentStatus == "Success" ? "bg-success" : "bg-danger")">
                                         @r.PaymentStatus
                                     </span>
                                 </td>
-                                <td class="small">@r.RechargeDate.ToString("dd MMM yyyy, hh:mm tt")</td>
+                                <td>@r.RechargeDate.ToString("dd MMM yyyy, hh:mm tt")</td>
                             </tr>
                         }
                     </tbody>
@@ -67,4 +58,17 @@ else
             </div>
         </div>
     </div>
+
+    <div class="mt-3 text-muted small text-end">
+        Total: <strong>@Model.Count</strong> recharge(s) | Total Spent: <strong>?@Model.Sum(r => r.Amount).ToString("N0")</strong>
+    </div>
 }
+
+<div class="text-center mt-4">
+    <a asp-controller="User" asp-action="Dashboard" class="btn btn-outline-secondary me-2">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+    </a>
+    <a asp-controller="Recharge" asp-action="EnterMobile" class="btn btn-primary">
+        <i class="bi bi-lightning-charge"></i> New Recharge
+    </a>
+</div>

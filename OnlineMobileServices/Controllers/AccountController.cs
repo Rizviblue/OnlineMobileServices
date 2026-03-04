@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineMobileServices.Models;
-using System.Linq;
-using Microsoft.AspNetCore.Http;
+using OnlineMobileServices.Models.ViewModels;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace OnlineMobileServices.Controllers
 {
@@ -18,55 +19,120 @@ namespace OnlineMobileServices.Controllers
         // GET: Register
         public IActionResult Register()
         {
-            return View();
+            if (HttpContext.Session.GetString("UserId") != null)
+                return RedirectToAction("Index", "Home");
+            return View(new RegisterViewModel());
         }
 
         // POST: Register
         [HttpPost]
-        public IActionResult Register(User user)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(model);
+
+            try
             {
+                // Check if mobile number already exists
+                if (await _context.Users.AnyAsync(u => u.MobileNumber == model.MobileNumber))
+                {
+                    ModelState.AddModelError("MobileNumber", "This mobile number is already registered.");
+                    return View(model);
+                }
+
+                // Check if email already exists
+                if (await _context.Users.AnyAsync(u => u.Email == model.Email))
+                {
+                    ModelState.AddModelError("Email", "This email is already registered.");
+                    return View(model);
+                }
+
+                var user = new User
+                {
+                    MobileNumber = model.MobileNumber,
+                    FullName = model.FullName,
+                    Email = model.Email,
+                    PasswordHash = HashPassword(model.Password),
+                    Role = "User",
+                    CreatedDate = DateTime.Now
+                };
+
                 _context.Users.Add(user);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
+
+                TempData["Success"] = "Registration successful! Please login with your credentials.";
                 return RedirectToAction("Login");
             }
-
-            return View(user);
+            catch (Exception)
+            {
+                TempData["Error"] = "An error occurred during registration. Please try again.";
+                return View(model);
+            }
         }
 
         // GET: Login
         public IActionResult Login()
         {
-            return View();
+            if (HttpContext.Session.GetString("UserId") != null)
+                return RedirectToAction("Index", "Home");
+            return View(new LoginViewModel());
         }
-        public IActionResult Logout()
-        {
-            HttpContext.Session.Clear();
-            return RedirectToAction("Login");
-        }
+
         // POST: Login
         [HttpPost]
-        public IActionResult Login(string mobileNumber, string password)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
-            var user = _context.Users
-                .FirstOrDefault(u => u.MobileNumber == mobileNumber
-                                  && u.PasswordHash == password);
+            if (!ModelState.IsValid)
+                return View(model);
 
-            if (user != null)
+            try
             {
+                var hashedPassword = HashPassword(model.Password);
+                var user = await _context.Users
+                    .FirstOrDefaultAsync(u => u.MobileNumber == model.MobileNumber
+                                           && u.PasswordHash == hashedPassword);
+
+                if (user == null)
+                {
+                    TempData["Error"] = "Invalid mobile number or password.";
+                    return View(model);
+                }
+
+                // Set session
                 HttpContext.Session.SetString("UserId", user.UserId.ToString());
                 HttpContext.Session.SetString("Username", user.FullName);
                 HttpContext.Session.SetString("UserRole", user.Role);
+                HttpContext.Session.SetString("UserMobile", user.MobileNumber);
+
+                TempData["Success"] = $"Welcome back, {user.FullName}!";
 
                 if (user.Role == "Admin")
                     return RedirectToAction("Dashboard", "Admin");
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Dashboard", "User");
             }
+            catch (Exception)
+            {
+                TempData["Error"] = "An error occurred during login. Please try again.";
+                return View(model);
+            }
+        }
 
-            ViewBag.Message = "Invalid Mobile Number or Password";
-            return View();
+        // Logout
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            TempData["Success"] = "You have been logged out successfully.";
+            return RedirectToAction("Login");
+        }
+
+        private static string HashPassword(string password)
+        {
+            using var sha256 = SHA256.Create();
+            var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+            return Convert.ToBase64String(bytes);
         }
     }
 }

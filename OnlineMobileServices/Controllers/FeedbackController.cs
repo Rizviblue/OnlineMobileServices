@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OnlineMobileServices.Models;
-using Microsoft.AspNetCore.Http;
 
 namespace OnlineMobileServices.Controllers
 {
@@ -18,26 +18,54 @@ namespace OnlineMobileServices.Controllers
             return HttpContext.Session.GetString("UserId") != null;
         }
 
+        // GET: Create Feedback
         public IActionResult Create()
         {
             if (!IsUserLoggedIn())
                 return RedirectToAction("Login", "Account");
 
-            return View();
+            // Pre-fill user info
+            ViewBag.UserName = HttpContext.Session.GetString("Username");
+            ViewBag.UserMobile = HttpContext.Session.GetString("UserMobile");
+            return View(new Feedback());
         }
 
+        // POST: Submit Feedback
         [HttpPost]
-        public IActionResult Create(Feedback feedback)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Feedback feedback)
         {
             if (!IsUserLoggedIn())
                 return RedirectToAction("Login", "Account");
 
-            feedback.FeedbackDate = DateTime.Now;
+            try
+            {
+                if (string.IsNullOrWhiteSpace(feedback.Name) ||
+                    string.IsNullOrWhiteSpace(feedback.MobileNumber) ||
+                    string.IsNullOrWhiteSpace(feedback.Message))
+                {
+                    TempData["Error"] = "Please fill in all fields.";
+                    ViewBag.UserName = HttpContext.Session.GetString("Username");
+                    ViewBag.UserMobile = HttpContext.Session.GetString("UserMobile");
+                    return View(feedback);
+                }
 
-            _context.Feedback.Add(feedback);
-            _context.SaveChanges();
+                feedback.FeedbackDate = DateTime.Now;
+                _context.Feedback.Add(feedback);
+                await _context.SaveChangesAsync();
 
-            ViewBag.Message = "Feedback submitted successfully!";
+                return RedirectToAction("ThankYou");
+            }
+            catch (Exception)
+            {
+                TempData["Error"] = "An error occurred submitting feedback. Please try again.";
+                return View(feedback);
+            }
+        }
+
+        // Thank You page
+        public IActionResult ThankYou()
+        {
             return View();
         }
     }

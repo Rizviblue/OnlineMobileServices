@@ -1,64 +1,28 @@
-﻿@model List<OnlineMobileServices.Models.PostPaidBill>
+@model List<OnlineMobileServices.Models.PostPaidBill>
 
 @{
-    ViewData["Title"] = "All Bills";
+    ViewData["Title"] = "Bill History";
 }
 
-<div class="page-header">
-    <div class="d-flex justify-content-between align-items-center flex-wrap">
-        <div>
-            <h2><i class="bi bi-receipt"></i> All Bill Payments</h2>
-            <p>Complete history of all postpaid bill transactions</p>
-        </div>
-        <a asp-action="Dashboard" class="btn btn-light">
-            <i class="bi bi-arrow-left"></i> Back to Dashboard
-        </a>
-    </div>
+<div class="page-header text-center">
+    <h2><i class="bi bi-journal-text"></i> Bill Payment History</h2>
+    <p>View all your past bill payments</p>
 </div>
 
 @if (Model == null || !Model.Any())
 {
     <div class="text-center py-5">
         <i class="bi bi-inbox display-1 text-muted"></i>
-        <h4 class="mt-3 text-muted">No bill records found</h4>
+        <h4 class="mt-3 text-muted">No bills found</h4>
+        <p class="text-muted">You don't have any bill records yet.</p>
+        <a asp-controller="Bill" asp-action="EnterMobile" class="btn btn-success">
+            <i class="bi bi-receipt"></i> Pay a Bill
+        </a>
     </div>
 }
 else
 {
-    var paidTotal = Model.Where(b => b.PaidStatus == "Paid").Sum(b => b.Amount);
-    var unpaidTotal = Model.Where(b => b.PaidStatus == "Unpaid").Sum(b => b.Amount);
-
-    <div class="row g-3 mb-3">
-        <div class="col-md-4">
-            <div class="card p-2 text-center bg-success bg-opacity-10">
-                <div class="card-body py-2">
-                    <small class="text-muted">Paid</small>
-                    <h5 class="fw-bold text-success mb-0">₹@paidTotal.ToString("N0")</h5>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card p-2 text-center bg-warning bg-opacity-10">
-                <div class="card-body py-2">
-                    <small class="text-muted">Unpaid</small>
-                    <h5 class="fw-bold text-warning mb-0">₹@unpaidTotal.ToString("N0")</h5>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card p-2 text-center bg-primary bg-opacity-10">
-                <div class="card-body py-2">
-                    <small class="text-muted">Total</small>
-                    <h5 class="fw-bold text-primary mb-0">₹@Model.Sum(b => b.Amount).ToString("N0")</h5>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="card shadow-sm">
-        <div class="card-header bg-white">
-            <h5 class="mb-0 fw-bold">All Bills (@Model.Count)</h5>
-        </div>
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
@@ -80,7 +44,7 @@ else
                             <tr>
                                 <td>@(sn++)</td>
                                 <td>+91 @b.MobileNumber</td>
-                                <td class="fw-bold">₹@b.Amount</td>
+                                <td class="fw-bold">?@b.Amount</td>
                                 <td class="@(b.DueDate < DateTime.Now && b.PaidStatus == "Unpaid" ? "text-danger fw-bold" : "")">
                                     @b.DueDate.ToString("dd MMM yyyy")
                                 </td>
@@ -96,17 +60,17 @@ else
                                     }
                                     else
                                     {
-                                        <span class="text-muted">—</span>
+                                        <span class="text-muted">�</span>
                                     }
                                 </td>
-                                <td class="small">
+                                <td>
                                     @if (b.PaymentDate.HasValue)
                                     {
                                         @b.PaymentDate.Value.ToString("dd MMM yyyy, hh:mm tt")
                                     }
                                     else
                                     {
-                                        <span class="text-muted">—</span>
+                                        <span class="text-muted">�</span>
                                     }
                                 </td>
                             </tr>
@@ -116,5 +80,19 @@ else
             </div>
         </div>
     </div>
+
+    <div class="mt-3 text-muted small text-end">
+        Total: <strong>@Model.Count</strong> bill(s) |
+        Paid: <strong>?@Model.Where(b => b.PaidStatus == "Paid").Sum(b => b.Amount).ToString("N0")</strong> |
+        Unpaid: <strong>?@Model.Where(b => b.PaidStatus == "Unpaid").Sum(b => b.Amount).ToString("N0")</strong>
+    </div>
 }
 
+<div class="text-center mt-4">
+    <a asp-controller="User" asp-action="Dashboard" class="btn btn-outline-secondary me-2">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+    </a>
+    <a asp-controller="Bill" asp-action="EnterMobile" class="btn btn-success">
+        <i class="bi bi-receipt"></i> Pay a Bill
+    </a>
+</div>

@@ -1,19 +1,77 @@
-﻿
+﻿@model OnlineMobileServices.Models.RechargePlan
+
 @{
-    ViewData["Title"] = "Payment";
+    ViewData["Title"] = "Confirm Payment";
+    var mobile = ViewBag.Mobile as string;
 }
 
-@model OnlineMobileServices.Models.RechargePlan
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="page-header text-center">
+            <h2><i class="bi bi-credit-card"></i> Confirm Payment</h2>
+            <p>Review your recharge details before proceeding</p>
+        </div>
 
-<h2>Payment Page</h2>
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center" style="width:70px;height:70px;">
+                        <i class="bi bi-phone display-6 text-primary"></i>
+                    </div>
+                </div>
 
-<p>Mobile: @ViewBag.Mobile</p>
-<p>Plan: @Model.PlanName</p>
-<p>Amount: @Model.Amount</p>
+                <table class="table table-borderless">
+                    <tbody>
+                        <tr>
+                            <td class="fw-semibold text-muted">Mobile Number</td>
+                            <td class="text-end fw-bold">+91 @mobile</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold text-muted">Plan</td>
+                            <td class="text-end">@Model.PlanName</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold text-muted">Type</td>
+                            <td class="text-end">
+                                <span class="badge bg-info">@Model.PlanType</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold text-muted">Description</td>
+                            <td class="text-end small">@Model.Description</td>
+                        </tr>
+                        <tr class="border-top">
+                            <td class="fw-bold fs-5">Amount</td>
+                            <td class="text-end fw-bold fs-4 text-primary">₹@Model.Amount</td>
+                        </tr>
+                    </tbody>
+                </table>
 
-<form method="post" asp-action="PaymentConfirm">
-    <input type="hidden" name="planId" value="@Model.PlanId" />
-    <input type="hidden" name="mobile" value="@ViewBag.Mobile" />
+                <form method="post" asp-action="PaymentConfirm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="planId" value="@Model.PlanId" />
+                    <input type="hidden" name="mobile" value="@mobile" />
 
-    <button type="submit">Pay Now</button>
-</form>
+                    <button type="submit" class="btn btn-primary w-100 py-2 btn-lg">
+                        <i class="bi bi-wallet2"></i> Pay ₹@Model.Amount Now
+                    </button>
+                </form>
+
+                <div class="text-center mt-3">
+                    <a asp-action="Plans" asp-route-type="@Model.PlanType" asp-route-mobile="@mobile"
+                       class="text-decoration-none">
+                        <i class="bi bi-arrow-left"></i> Choose Different Plan
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3 shadow-sm border-0">
+            <div class="card-body p-3 text-center">
+                <small class="text-muted">
+                    <i class="bi bi-shield-check text-success"></i> Secure payment | Instant recharge
+                </small>
+            </div>
+        </div>
+    </div>
+</div>

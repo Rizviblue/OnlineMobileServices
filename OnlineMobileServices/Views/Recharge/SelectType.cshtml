@@ -1,10 +1,54 @@
-﻿
-@{
-    ViewData["Title"] = "SelectType";
+﻿@{
+    ViewData["Title"] = "Select Recharge Type";
+    var mobile = ViewBag.Mobile as string;
 }
 
-<h2>Select Recharge Type</h2>
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="page-header text-center">
+            <h2><i class="bi bi-lightning-charge"></i> Select Recharge Type</h2>
+            <p>Mobile: <strong>+91 @mobile</strong></p>
+        </div>
 
-<a href="/Recharge/Plans?type=TopUp&mobile=@ViewBag.Mobile">Top Up</a>
-<br />
-<a href="/Recharge/Plans?type=Special&mobile=@ViewBag.Mobile">Special Recharge</a>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <a asp-action="Plans" asp-route-type="TopUp" asp-route-mobile="@mobile" class="text-decoration-none">
+                    <div class="card text-center p-4 h-100 border-0" style="cursor:pointer;">
+                        <div class="card-body">
+                            <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center" style="width:80px;height:80px;">
+                                <i class="bi bi-wallet2 display-5 text-primary"></i>
+                            </div>
+                            <h4 class="mt-3 fw-bold text-dark">Top Up</h4>
+                            <p class="text-muted">Add talktime balance to your prepaid number with data benefits</p>
+                            <span class="btn btn-primary">
+                                View Plans <i class="bi bi-arrow-right"></i>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-6">
+                <a asp-action="Plans" asp-route-type="Special" asp-route-mobile="@mobile" class="text-decoration-none">
+                    <div class="card text-center p-4 h-100 border-0" style="cursor:pointer;">
+                        <div class="card-body">
+                            <div class="rounded-circle bg-success bg-opacity-10 d-inline-flex align-items-center justify-content-center" style="width:80px;height:80px;">
+                                <i class="bi bi-stars display-5 text-success"></i>
+                            </div>
+                            <h4 class="mt-3 fw-bold text-dark">Special Recharge</h4>
+                            <p class="text-muted">Unlimited calling, data, and SMS packs with long validity</p>
+                            <span class="btn btn-success">
+                                View Plans <i class="bi bi-arrow-right"></i>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a asp-action="EnterMobile" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Change Number
+            </a>
+        </div>
+    </div>
+</div>

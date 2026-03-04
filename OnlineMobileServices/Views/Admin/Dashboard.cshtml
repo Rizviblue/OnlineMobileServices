@@ -1,34 +1,281 @@
-﻿@{
+﻿@model OnlineMobileServices.Models.ViewModels.AdminDashboardViewModel
+
+@{
     ViewData["Title"] = "Admin Dashboard";
 }
 
-<h2>Admin Dashboard</h2>
-<hr />
-
-<div class="row">
-
-    <div class="col-md-3">
-        <a asp-controller="User" asp-action="Index" class="btn btn-primary w-100">
-            Manage Users
-        </a>
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <div>
+            <h2><i class="bi bi-shield-lock"></i> Admin Dashboard</h2>
+            <p>Overview of system activity and revenue</p>
+        </div>
+        <div>
+            <a asp-action="Users" class="btn btn-light btn-sm me-1"><i class="bi bi-people"></i> Users</a>
+            <a asp-action="ViewRecharges" class="btn btn-light btn-sm me-1"><i class="bi bi-lightning-charge"></i> Recharges</a>
+            <a asp-action="ViewBills" class="btn btn-light btn-sm me-1"><i class="bi bi-receipt"></i> Bills</a>
+            <a asp-action="ViewFeedback" class="btn btn-light btn-sm"><i class="bi bi-chat-dots"></i> Feedback</a>
+        </div>
     </div>
-
-    <div class="col-md-3">
-        <a asp-controller="Recharge" asp-action="Index" class="btn btn-success w-100">
-            View Recharges
-        </a>
-    </div>
-
-    <div class="col-md-3">
-        <a asp-controller="Bill" asp-action="Index" class="btn btn-warning w-100">
-            View Bills
-        </a>
-    </div>
-
-    <div class="col-md-3">
-        <a asp-controller="Feedback" asp-action="Index" class="btn btn-info w-100">
-            View Feedback
-        </a>
-    </div>
-
 </div>
+
+<!-- Stats Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3 col-6">
+        <div class="card text-center p-3 border-start border-primary border-4">
+            <div class="card-body">
+                <i class="bi bi-people-fill display-5 text-primary"></i>
+                <h3 class="mt-2 fw-bold mb-0">@Model.TotalUsers</h3>
+                <p class="text-muted mb-0 small">Total Users</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="card text-center p-3 border-start border-success border-4">
+            <div class="card-body">
+                <i class="bi bi-lightning-charge-fill display-5 text-success"></i>
+                <h3 class="mt-2 fw-bold mb-0">@Model.TotalRecharges</h3>
+                <p class="text-muted mb-0 small">Total Recharges</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="card text-center p-3 border-start border-warning border-4">
+            <div class="card-body">
+                <i class="bi bi-receipt-cutoff display-5 text-warning"></i>
+                <h3 class="mt-2 fw-bold mb-0">@Model.TotalBills</h3>
+                <p class="text-muted mb-0 small">Total Bills</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="card text-center p-3 border-start border-info border-4">
+            <div class="card-body">
+                <i class="bi bi-chat-dots-fill display-5 text-info"></i>
+                <h3 class="mt-2 fw-bold mb-0">@Model.TotalFeedback</h3>
+                <p class="text-muted mb-0 small">Total Feedback</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Revenue Row -->
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card p-3 bg-primary bg-opacity-10">
+            <div class="card-body text-center">
+                <h6 class="text-muted mb-1">Recharge Revenue</h6>
+                <h3 class="fw-bold text-primary">₹@Model.TotalRechargeRevenue.ToString("N0")</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 bg-success bg-opacity-10">
+            <div class="card-body text-center">
+                <h6 class="text-muted mb-1">Bill Revenue</h6>
+                <h3 class="fw-bold text-success">₹@Model.TotalBillRevenue.ToString("N0")</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 bg-warning bg-opacity-10">
+            <div class="card-body text-center">
+                <h6 class="text-muted mb-1">Total Revenue</h6>
+                <h3 class="fw-bold text-warning">₹@Model.TotalRevenue.ToString("N0")</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Monthly Revenue Chart -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-white">
+        <h5 class="mb-0 fw-bold"><i class="bi bi-bar-chart-line text-primary"></i> Monthly Revenue (Last 6 Months)</h5>
+    </div>
+    <div class="card-body">
+        <canvas id="revenueChart" height="100"></canvas>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Recent Recharges -->
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-lightning-charge text-primary"></i> Recent Recharges</h5>
+                <a asp-action="ViewRecharges" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.RecentRecharges.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Mobile</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var r in Model.RecentRecharges)
+                                {
+                                    <tr>
+                                        <td>@r.MobileNumber</td>
+                                        <td class="fw-bold">₹@r.Amount</td>
+                                        <td class="small">@r.RechargeDate.ToString("dd MMM yyyy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4 text-muted">
+                        <i class="bi bi-inbox display-6"></i>
+                        <p class="mt-2">No recharges yet</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Bills -->
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-receipt text-success"></i> Recent Bills</h5>
+                <a asp-action="ViewBills" class="btn btn-sm btn-outline-success">View All</a>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.RecentBills.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Mobile</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var b in Model.RecentBills)
+                                {
+                                    <tr>
+                                        <td>@b.MobileNumber</td>
+                                        <td class="fw-bold">₹@b.Amount</td>
+                                        <td>
+                                            <span class="badge @(b.PaidStatus == "Paid" ? "bg-success" : "bg-warning text-dark")">
+                                                @b.PaidStatus
+                                            </span>
+                                        </td>
+                                        <td class="small">@(b.PaymentDate?.ToString("dd MMM") ?? b.DueDate.ToString("dd MMM"))</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4 text-muted">
+                        <i class="bi bi-inbox display-6"></i>
+                        <p class="mt-2">No bills yet</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Feedback -->
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 fw-bold"><i class="bi bi-chat-dots text-info"></i> Recent Feedback</h5>
+        <a asp-action="ViewFeedback" class="btn btn-sm btn-outline-info">View All</a>
+    </div>
+    <div class="card-body p-0">
+        @if (Model.RecentFeedback.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Mobile</th>
+                            <th>Message</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var f in Model.RecentFeedback)
+                        {
+                            <tr>
+                                <td class="fw-semibold">@f.Name</td>
+                                <td>@f.MobileNumber</td>
+                                <td class="small" style="max-width:300px;">@(f.Message.Length > 80 ? f.Message[..80] + "..." : f.Message)</td>
+                                <td class="small">@f.FeedbackDate.ToString("dd MMM yyyy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-4 text-muted">
+                <i class="bi bi-inbox display-6"></i>
+                <p class="mt-2">No feedback yet</p>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script>
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthLabels)),
+                datasets: [
+                    {
+                        label: 'Recharge Revenue (₹)',
+                        data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthlyRechargeRevenue)),
+                        backgroundColor: 'rgba(102, 126, 234, 0.7)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderWidth: 1,
+                        borderRadius: 6
+                    },
+                    {
+                        label: 'Bill Revenue (₹)',
+                        data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthlyBillRevenue)),
+                        backgroundColor: 'rgba(0, 184, 148, 0.7)',
+                        borderColor: 'rgba(0, 184, 148, 1)',
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'top' }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) { return '₹' + value.toLocaleString(); }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}

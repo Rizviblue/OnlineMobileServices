@@ -1,8 +1,130 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Hero Section -->
+<div class="page-header text-center" style="padding: 3rem 2rem;">
+    <h1 class="display-5 fw-bold"><i class="bi bi-phone"></i> Online Mobile Services</h1>
+    <p class="lead mt-2">Fast, Secure & Reliable Mobile Recharges and Bill Payments</p>
+    <div class="mt-4">
+        <a asp-controller="Recharge" asp-action="EnterMobile" class="btn btn-light btn-lg me-2">
+            <i class="bi bi-lightning-charge"></i> Recharge Now
+        </a>
+        <a asp-controller="Bill" asp-action="EnterMobile" class="btn btn-outline-light btn-lg">
+            <i class="bi bi-receipt"></i> Pay Bill
+        </a>
+    </div>
+</div>
+
+<!-- Stats Row -->
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="card text-center p-4">
+            <div class="card-body">
+                <i class="bi bi-people-fill display-4 text-primary"></i>
+                <h3 class="mt-3 fw-bold">@(ViewBag.TotalUsers ?? 0)+</h3>
+                <p class="text-muted mb-0">Registered Users</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center p-4">
+            <div class="card-body">
+                <i class="bi bi-lightning-charge-fill display-4 text-success"></i>
+                <h3 class="mt-3 fw-bold">@(ViewBag.TotalRecharges ?? 0)+</h3>
+                <p class="text-muted mb-0">Recharges Completed</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center p-4">
+            <div class="card-body">
+                <i class="bi bi-collection-fill display-4 text-info"></i>
+                <h3 class="mt-3 fw-bold">@(ViewBag.TotalPlans ?? 0)+</h3>
+                <p class="text-muted mb-0">Plans Available</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<h3 class="fw-bold mb-4 text-center">Why Choose Us?</h3>
+<div class="row g-4 mb-5">
+    <div class="col-md-3">
+        <div class="card text-center p-4 h-100">
+            <div class="card-body">
+                <i class="bi bi-shield-check display-5 text-primary"></i>
+                <h5 class="mt-3">Secure Payments</h5>
+                <p class="text-muted small">All transactions are secured with advanced encryption</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center p-4 h-100">
+            <div class="card-body">
+                <i class="bi bi-clock-history display-5 text-success"></i>
+                <h5 class="mt-3">Instant Recharge</h5>
+                <p class="text-muted small">Your recharge is processed within seconds</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center p-4 h-100">
+            <div class="card-body">
+                <i class="bi bi-wallet2 display-5 text-warning"></i>
+                <h5 class="mt-3">Best Plans</h5>
+                <p class="text-muted small">Wide range of affordable recharge plans</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center p-4 h-100">
+            <div class="card-body">
+                <i class="bi bi-headset display-5 text-danger"></i>
+                <h5 class="mt-3">24/7 Support</h5>
+                <p class="text-muted small">Our support team is always ready to help</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<h3 class="fw-bold mb-4 text-center">Quick Actions</h3>
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="card p-4 h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-lightning-charge display-4 text-primary"></i>
+                <h5 class="mt-3">Prepaid Recharge</h5>
+                <p class="text-muted">Choose from TopUp or Special recharge plans for your prepaid number.</p>
+                <a asp-controller="Recharge" asp-action="EnterMobile" class="btn btn-primary">
+                    Recharge Now <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-4 h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-receipt display-4 text-success"></i>
+                <h5 class="mt-3">Postpaid Bill</h5>
+                <p class="text-muted">View and pay your postpaid mobile bill instantly online.</p>
+                <a asp-controller="Bill" asp-action="EnterMobile" class="btn btn-success">
+                    Pay Bill <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-4 h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-chat-dots display-4 text-info"></i>
+                <h5 class="mt-3">Feedback</h5>
+                <p class="text-muted">Share your experience and help us improve our services.</p>
+                <a asp-controller="Feedback" asp-action="Create" class="btn btn-info text-white">
+                    Give Feedback <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
